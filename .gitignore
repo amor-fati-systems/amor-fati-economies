@@ -1,0 +1,7 @@
+.bloop/
+.bsp/
+.metals/
+target/
+
+# Source workbooks are verified locally and are never committed.
+raw/

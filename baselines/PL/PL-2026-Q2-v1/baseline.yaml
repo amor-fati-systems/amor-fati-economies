@@ -1,0 +1,16 @@
+schema_version: 1
+baseline_id: PL-2026-Q2-v1
+country: PL
+reference_period: 2026-Q2
+status: assembly
+executable: false
+components:
+  enterprise_controls:
+    status: source_pinned
+    recipe: recipes/PL/PL-2026-Q2-v1/enterprise-controls.yaml
+  population_controls:
+    status: planned
+  institutional_and_policy_controls:
+    status: planned
+  macro_financial_controls:
+    status: planned
