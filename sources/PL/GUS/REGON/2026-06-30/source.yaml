@@ -11,6 +11,8 @@ artifact:
 observation_period: 2026-06-30
 released_at: 2026-07-16
 accessed_at: 2026-07-21
-redistribution_status: not_assessed_raw_artifact_not_committed
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
 workbook:
   enterprise_controls_sheet: Tabl 6

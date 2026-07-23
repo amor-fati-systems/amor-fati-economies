@@ -8,8 +8,16 @@ building a reference economy.
 
 Every external input has a tracked source record under `sources/`. At minimum,
 it names the provider, direct location, SHA-256 of the acquired bytes,
-observation period, release date, access date, and redistribution status.
-This identifies the exact input without committing the raw artifact.
+observation period, release date, access date, and raw-artifact policy. This
+identifies the exact input without committing the raw artifact.
+
+The `raw_artifact` object records two independent facts:
+
+- `tracked_in_repository` says whether the acquired upstream bytes are present
+  in Git. Raw downloads must be `false` in this public repository.
+- `redistribution_status` records the review status of permission to rehost
+  those upstream bytes. `not_assessed` means no such determination has been
+  made; it does not imply permission or prohibition.
 
 Each deterministic transformation must verify the declared source digest before
 reading it. A changed upstream file is a new source artifact and requires a
