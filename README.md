@@ -43,3 +43,9 @@ before adding a country, source, or artifact.
 
 An artifact correction produces a new baseline version. A scenario is not a
 baseline and must reference a fixed baseline version rather than modifying it.
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a source, recipe, or
+artifact. External contributions require the [Amor Fati Contributor License
+Agreement](CLA.md).
