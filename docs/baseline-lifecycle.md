@@ -33,15 +33,15 @@ Every empirical component follows this chain:
 
 A baseline remains `assembly` until all of its required components have the
 status required by its declared executable contract. Only then may it be marked
-`executable`. The current `PL-2026-Q2-v1` record is deliberately not
+`executable`. The initial `PL-2025-Q4-v1` record is deliberately not
 executable.
 
 ## Versioning
 
 Baseline IDs have the form `<ISO-3166-1-alpha-2>-<YYYY>-<Qn>-v<n>`, for
-example `PL-2026-Q2-v1`.
+example `PL-2025-Q4-v1`.
 
 Once published, a baseline directory is immutable. A correction, source
 revision, revised bridge, or improved calibration produces a new version such
-as `PL-2026-Q2-v2`. Scenarios belong in `amor-fati-research` and reference an
+as `PL-2025-Q4-v2`. Scenarios belong in `amor-fati-research` and reference an
 unchanged baseline ID plus artifact hashes.

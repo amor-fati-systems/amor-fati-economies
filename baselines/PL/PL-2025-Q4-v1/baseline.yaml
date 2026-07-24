@@ -1,14 +1,13 @@
 schema_version: 1
-baseline_id: PL-2026-Q2-v1
+baseline_id: PL-2025-Q4-v1
 country: PL
-reference_period: 2026-Q2
+reference_period: 2025-Q4
 status: assembly
 executable: false
 components:
-  enterprise_controls:
-    status: artifact_validated
-    recipe: recipes/PL/PL-2026-Q2-v1/enterprise-controls.yaml
   population_controls:
+    status: planned
+  enterprise_controls:
     status: planned
   institutional_and_policy_controls:
     status: planned
