@@ -23,12 +23,11 @@ The intended flow is:
 source record -> recipe + deterministic transformation -> validated component -> baseline record
 ```
 
-The first workstream is the Polish `PL-2026-Q2-v1` reference economy. Its
-registry-native enterprise-control component is derived from the pinned GUS
-quarterly REGON workbook for the state at 30 June 2026. The component is
-validated against the core contract, but the baseline is not yet executable;
-its current component status is recorded in
-[`baselines/PL/PL-2026-Q2-v1/baseline.yaml`](baselines/PL/PL-2026-Q2-v1/baseline.yaml).
+The first workstream is the Polish `PL-2025-Q4-v1` reference economy. It
+represents the observed Q4 2025 closing boundary and is the opening state for
+simulation from January 2026. No empirical component is committed or
+validated yet; its planned assembly status is recorded in
+[`baselines/PL/PL-2025-Q4-v1/baseline.yaml`](baselines/PL/PL-2025-Q4-v1/baseline.yaml).
 
 Read [the baseline lifecycle](docs/baseline-lifecycle.md) and [data governance](docs/data-governance.md)
 before adding a country, source, or artifact.
