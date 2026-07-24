@@ -1,0 +1,37 @@
+schema_version: 1
+source_id: PL-GUS-EMPLOYMENT-NATIONAL-ECONOMY-2025-12-31
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Employed persons in the national economy in Poland, December 2025
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/5474/27/37/1/pracujacy_w_gospodarce_narodowej_w_polsce_w_grudniu_2025_tab.xlsx
+  sha256: 296ca8daaab4746a4009f5eaade87231e0c0b0680941d3bb3581062f792bc7eb
+observation_period: 2025-12-31
+released_at: 2026-05-28
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: person employed in the national economy
+  published_concept: persons counted once at their main job, including persons resident in Poland or abroad
+  geography: Poland, voivodeships, powiats, and other published territorial aggregates
+  dimensions:
+    - PKD 2007 section
+    - sex
+    - seat of the entity of the main job
+intended_use:
+  role: structural_prior
+  supports:
+    - current aggregate allocation weights for synthetic workplaces by the published seat, PKD 2007 section, and sex dimensions
+    - a declared bridge between the person-side BAEL population and synthetic main-employment attachments
+  does_not_support:
+    - the actual location where a person performs work
+    - an establishment, employer, contract, FTE, vacancy, or person-level identifier
+    - equality with BAEL employed-person totals without a declared universe bridge
+forbidden_inferences:
+  - Do not relabel the seat of the entity of the main job as an observed actual workplace.
+  - Do not turn an aggregate seat-by-section cell into an observed worker-to-firm relation.
+  - Do not force this administrative-statistics universe to equal the BAEL population.
