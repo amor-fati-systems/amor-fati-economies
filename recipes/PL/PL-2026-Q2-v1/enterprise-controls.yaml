@@ -2,7 +2,7 @@ schema_version: 1
 recipe_id: PL-2026-Q2-v1-enterprise-controls
 baseline_id: PL-2026-Q2-v1
 component: enterprise_controls
-status: source_pinned
+status: artifact_validated
 source_record: sources/PL/GUS/REGON/2026-06-30/source.yaml
 source_table: Tabl 6
 source_dimensions:
@@ -18,10 +18,24 @@ normalization:
     - 50-249
     - 250=>
 source_residuals:
-  - Brak województwa
-  - Brak PKD
+  source_margins:
+    - Brak województwa
+    - Brak PKD
+  partition:
+    - missing_registered_seat_only
+    - missing_pkd_only
+    - missing_registered_seat_and_pkd
+  method: >
+    The two published national margins overlap. For every worker band, derive
+    missing_registered_seat_and_pkd as known_region_and_pkd + Brak województwa
+    + Brak PKD - national total, then subtract that intersection from each
+    source margin. Reject a negative intersection or one larger than either
+    margin.
 forbidden_inferences:
   - Do not convert expected-worker bands into realised employment or FTE.
   - Do not infer a normal region or PKD section for a source residual.
   - Do not drop residual counts before national-total reconciliation.
+validation:
+  contract: EnterpriseControlBundleLoader
+  reconciliation: Exact national total by REGON expected-worker band.
 output_root: baselines/PL/PL-2026-Q2-v1/enterprise-controls

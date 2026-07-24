@@ -24,8 +24,9 @@ source record -> recipe + deterministic transformation -> validated component ->
 ```
 
 The first workstream is the Polish `PL-2026-Q2-v1` reference economy. Its
-enterprise-control component begins with the pinned GUS quarterly REGON
-workbook for the state at 30 June 2026. The baseline is not yet executable;
+registry-native enterprise-control component is derived from the pinned GUS
+quarterly REGON workbook for the state at 30 June 2026. The component is
+validated against the core contract, but the baseline is not yet executable;
 its current component status is recorded in
 [`baselines/PL/PL-2026-Q2-v1/baseline.yaml`](baselines/PL/PL-2026-Q2-v1/baseline.yaml).
 

@@ -6,7 +6,7 @@ status: assembly
 executable: false
 components:
   enterprise_controls:
-    status: source_pinned
+    status: artifact_validated
     recipe: recipes/PL/PL-2026-Q2-v1/enterprise-controls.yaml
   population_controls:
     status: planned
