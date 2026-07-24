@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream
 import java.nio.file.{Files, Path}
 import java.security.MessageDigest
 import java.util.Locale
-import scala.util.Using
+import scala.util.{Try, Using}
 
 /** Verified access to the first pinned REGON source artifact.
   *
@@ -61,39 +61,58 @@ object Pl2026Q2RegonSource:
     * always uses the pinned source identity and table-shape contract above.
     */
   private[regon] def inspect(source: Path, contract: InspectionContract): Either[InspectionError, Evidence] =
+    for
+      sourceBytes <- readVerifiedBytes(source, contract)
+      evidence    <- inspectBytes(source, sourceBytes, contract)
+    yield evidence
+
+  /** Read one immutable source snapshot and verify its pinned digest before a
+    * parser may consume it. Source-specific extractors use this method so they
+    * cannot inspect one version of a workbook and normalize another.
+    */
+  private[regon] def readVerifiedBytes(source: Path): Either[InspectionError, Array[Byte]] = readVerifiedBytes(source, PinnedContract)
+
+  private[regon] def readVerifiedBytes(source: Path, contract: InspectionContract): Either[InspectionError, Array[Byte]] =
     if !Files.isRegularFile(source) then Left(InspectionError.MissingSource(source))
     else
-      Using
-        .Manager { use =>
-          val sourceBytes = Files.readAllBytes(source)
-          val actual      = sha256(sourceBytes)
-          if actual != contract.expectedSha256 then Left(InspectionError.DigestMismatch(contract.expectedSha256, actual))
-          else
-            val input    = use(new ByteArrayInputStream(sourceBytes))
-            val workbook = use(WorkbookFactory.create(input))
-            Option(workbook.getSheet(contract.tabl6Name))
-              .toRight(InspectionError.MissingSheet(contract.tabl6Name))
-              .flatMap: sheet =>
-                val lastRowIndex = sheet.getLastRowNum
-                Either.cond(
-                  lastRowIndex == contract.expectedLastRowIndex, {
-                    val formatter = new DataFormatter(Locale.ROOT)
-                    Evidence(
-                      source = source,
-                      sha256 = actual,
-                      sheetName = sheet.getSheetName,
-                      lastRowIndex = lastRowIndex,
-                      headerRows = (0 to 3).toVector.map(rowIndex => rowValues(sheet.getRow(rowIndex), formatter)),
-                      firstDataRows = (4 to 19).toVector.map(rowIndex => rowValues(sheet.getRow(rowIndex), formatter)),
-                    )
-                  },
-                  InspectionError.UnexpectedLastRowIndex(contract.expectedLastRowIndex, lastRowIndex),
-                )
-        }
-        .toEither
-        .left
+      Try(Files.readAllBytes(source)).toEither.left
         .map(error => InspectionError.ReadFailure(messageOf(error)))
-        .flatMap(identity)
+        .flatMap: sourceBytes =>
+          val actual = sha256(sourceBytes)
+          Either.cond(
+            actual == contract.expectedSha256,
+            sourceBytes,
+            InspectionError.DigestMismatch(contract.expectedSha256, actual),
+          )
+
+  private def inspectBytes(source: Path, sourceBytes: Array[Byte], contract: InspectionContract): Either[InspectionError, Evidence] =
+    Using
+      .Manager { use =>
+        val input    = use(new ByteArrayInputStream(sourceBytes))
+        val workbook = use(WorkbookFactory.create(input))
+        Option(workbook.getSheet(contract.tabl6Name))
+          .toRight(InspectionError.MissingSheet(contract.tabl6Name))
+          .flatMap: sheet =>
+            val lastRowIndex = sheet.getLastRowNum
+            Either.cond(
+              lastRowIndex == contract.expectedLastRowIndex, {
+                val formatter = new DataFormatter(Locale.ROOT)
+                Evidence(
+                  source = source,
+                  sha256 = sha256(sourceBytes),
+                  sheetName = sheet.getSheetName,
+                  lastRowIndex = lastRowIndex,
+                  headerRows = (0 to 3).toVector.map(rowIndex => rowValues(sheet.getRow(rowIndex), formatter)),
+                  firstDataRows = (4 to 19).toVector.map(rowIndex => rowValues(sheet.getRow(rowIndex), formatter)),
+                )
+              },
+              InspectionError.UnexpectedLastRowIndex(contract.expectedLastRowIndex, lastRowIndex),
+            )
+      }
+      .toEither
+      .left
+      .map(error => InspectionError.ReadFailure(messageOf(error)))
+      .flatMap(identity)
 
   private def rowValues(row: Row | Null, formatter: DataFormatter): Vector[String] =
     Option(row).fold(Vector.fill(9)("")): current =>
