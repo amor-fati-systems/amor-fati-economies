@@ -87,9 +87,9 @@ measurement.
 | Private versus collective residents in Q4 2025 | No matching Q4 split has been pinned. BDL exposes NSP 2021 collective-accommodation data, but the exact API extraction and its scope still require a source record. | Keep collective residents as a separate required subcomponent. Do not assign all residents to private households. |
 | Regional BAEL labour margin | The pinned public Q4 release does not establish the required full 16-voivodeship joint margin. | Do not make it a hard control. A later regional bridge must identify its distinct universe and tolerance. |
 | Household member role by age | The reviewed public Census tables are marginal household and family tables, not a member-level microdata extract. | Generate this relation from the structural priors; record it as prior fit or acquire an approved microdata source later. |
-| Residence-to-workplace commuting | No current origin-destination source is pinned. | Do not create a workplace-voivodeship hard control or call a historical commuting matrix a Q4 observation. |
-| Person-to-firm employment | Neither BAEL nor the reviewed Census tables identify employers. | No person-to-firm edge in this target. Employment remains a person-level labour state or a later explicit matching model. |
-| Firm stock and job capacity | No Q4 2025 enterprise component is pinned. | Keep enterprise compilation separate from the first population artifact. |
+| Residence-to-workplace commuting | A historical NSP 2021 matrix is pinned and assessed in the [employment-network source review](employment-network-source-review.md); no current origin-destination source is pinned. | Do not create a workplace-voivodeship hard control or call the historical matrix a Q4 observation. |
+| Person-to-firm employment | Neither BAEL nor the reviewed Census tables identify employers. | No empirical person-to-firm edge in this target. A later matching component may create an explicitly synthetic model edge. |
+| Firm stock and job capacity | Q4 2025 REGON is now pinned as a structural prior, but it does not measure realised job capacity. | Keep enterprise compilation separate from the first population artifact. |
 
 ## Consequences For The Population Contract
 

@@ -1,0 +1,36 @@
+schema_version: 1
+source_id: PL-GUS-NSP-2021-COMMUTING-MATRIX
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Matrix of population flows connected with employment, NSP 2021
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/6536/9/2/1/macierz_przeplywow_ludnosci_zwiazanych_z_zatrudnieniem.xlsx
+  sha256: 55b6c4ea92242734ee0ac6b565232678b9afe4ab47b4acddf1297ab76a296983
+observation_period: 2021
+released_at: 2024-01-31
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: published employment-related flow
+  published_concept: NSP 2021 origin-to-work-location flow matrix
+  geography: origin and destination gminas
+  dimensions:
+    - gmina of residence
+    - gmina of work location
+intended_use:
+  role: structural_prior
+  supports:
+    - a historical origin-to-work-location pattern under the publication's stated scope
+    - separately reported inbound and outbound gmina totals
+  does_not_support:
+    - a Q4 2025 origin-to-workplace observation
+    - the complete universe of employed residents unless a reviewed bridge establishes that scope
+    - activity, employer, establishment, contract, FTE, or person-level identity
+forbidden_inferences:
+  - Do not present the 2021 matrix as a contemporary labour-market control.
+  - Do not turn a published flow cell into a worker-to-firm relation.
+  - Do not assume that unreported same-gmina, excluded, or otherwise out-of-scope employment is zero.
