@@ -1,0 +1,37 @@
+schema_version: 1
+source_id: PL-GUS-BAEL-2025-Q4
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Economic activity of the population, Q4 2025
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/5475/4/61/1/aktywnosc_ekonomiczna_ludnosci.zip
+  sha256: 4b81cd3d8bd25e774b210fdb7ad9a5d1e8fcf08c523f2c87b594ef813a2c4b03
+observation_period: 2025-Q4
+released_at: 2026-04-30
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: person
+  published_concept: BAEL population resident in dwellings
+  dimensions:
+    - published labour status
+    - published age bands
+    - published sex and territorial cross-sections where available
+intended_use:
+  role: hard_control_candidate
+  supports:
+    - national labour-status margins in the publication's declared universe and age bands
+    - selected national employment distributions by published activity classification
+  does_not_support:
+    - a complete voivodeship-by-sex-by-age-by-labour-status joint control
+    - workplace voivodeship
+    - a residence-to-workplace origin-destination matrix
+    - person-to-firm assignments
+forbidden_inferences:
+  - Do not assign labour status to residents in collective accommodation from BAEL alone.
+  - Do not split published age bands into finer hard-control cells without an explicit bridge.
+  - Do not treat jobs, FTE, vacancies, or a published sector distribution as a person-to-firm relation.

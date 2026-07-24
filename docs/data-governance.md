@@ -8,8 +8,15 @@ building a reference economy.
 
 Every external input has a tracked source record under `sources/`. At minimum,
 it names the provider, direct location, SHA-256 of the acquired bytes,
-observation period, release date, access date, and raw-artifact policy. This
-identifies the exact input without committing the raw artifact.
+observation period, release date, access date, statistical universe, intended
+use, forbidden inferences, and raw-artifact policy. This identifies the exact
+input without committing the raw artifact.
+
+The source record must declare a candidate use: hard-control candidate,
+structural prior, or validation-only target. A source can be reliable but still
+be unsuitable for a requested joint dimension, time boundary, or statistical
+universe. The recipe confirms that qualification; a transformation must not
+turn a source limitation into an implicit empirical claim.
 
 The `raw_artifact` object records two independent facts:
 

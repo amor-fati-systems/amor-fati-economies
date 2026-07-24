@@ -20,14 +20,20 @@ Every empirical component follows this chain:
    whether the collection is executable; it must not imply that missing
    components have been inferred.
 
+A source record is evidence that a particular upstream artifact was acquired
+and identified. It is not evidence that the artifact supports every dimension
+of a proposed component. The recipe qualifies each source as a hard control,
+structural prior, validation target, or unsupported candidate before an
+artifact is produced.
+
 ## Component Status
 
 `baseline.yaml` records one of these statuses for each component:
 
 | Status | Meaning |
 | --- | --- |
-| `planned` | The component boundary is known but no source is pinned. |
-| `source_pinned` | The source is identified and integrity-pinned, but no accepted artifact exists. |
+| `planned` | The component boundary is known, but it has no complete qualified source-and-recipe set. |
+| `source_pinned` | Every required source and bridge is identified, qualified, and integrity-pinned, but no accepted artifact exists. |
 | `artifact_validated` | A generated artifact passes the owned core contract and its declared reconciliation checks. |
 | `runtime_validated` | The validated artifact has also passed the declared model-initialization and runtime evidence gate. |
 
@@ -35,6 +41,12 @@ A baseline remains `assembly` until all of its required components have the
 status required by its declared executable contract. Only then may it be marked
 `executable`. The initial `PL-2025-Q4-v1` record is deliberately not
 executable.
+
+An individual source record may be committed while its component remains
+`planned`. A component becomes `source_pinned` only when its recipe identifies
+all required sources and bridges, including the exact use and limitation of
+each one. A collection of plausible URLs or historical priors does not satisfy
+that status.
 
 ## Versioning
 
