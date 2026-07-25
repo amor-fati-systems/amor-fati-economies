@@ -1,0 +1,30 @@
+schema_version: 1
+source_id: PL-GUS-NSP2021-FAMILY-TYPE
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Families by type in statistical regions and census enumeration areas, NSP 2021
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/6536/13/1/1/rodziny_w_rejonach_i_obwodach_wg_typow_nsp2021.xlsx
+  sha256: 84d881ddc276b1ece5acd584565ec647d3be327cc247f70229d75d42801f05fd
+observation_period: 2021-03-31
+released_at: 2025-11-20
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: family
+  geography: statistical regions and census enumeration areas with gmina TERYT identifiers
+  dimensions:
+    - family type
+intended_use:
+  role: structural_prior
+  supports:
+    - conditional allocation of couple and lone-parent household members
+  does_not_support:
+    - a household total
+    - a unique household assignment for every family
+forbidden_inferences:
+  - Do not equate family counts with household counts, especially for multi-family households.

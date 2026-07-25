@@ -1,0 +1,31 @@
+schema_version: 1
+source_id: PL-GUS-NSP2021-HOUSEHOLD-COMPOSITION
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Households by family composition in statistical regions and census enumeration areas, NSP 2021
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/6536/13/1/1/gospodarstwa_w_rejonach_i_obwodach_wg_skladu_rodzinnego_nsp2021_2.xlsx
+  sha256: e960d4b43f35704d64da2373d3ae47d4afab52ed635535652b76a72d25672025
+observation_period: 2021-03-31
+released_at: 2025-11-20
+revised_at: 2025-12-09
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: private household
+  geography: statistical regions and census enumeration areas with gmina TERYT identifiers
+  dimensions:
+    - family composition
+intended_use:
+  role: structural_prior
+  supports:
+    - conditional private-household composition after aggregation to voivodeships
+  does_not_support:
+    - observed Q4 2025 household composition
+    - age-by-role membership controls
+forbidden_inferences:
+  - Do not promote a family-composition category to a contemporaneous household count without a declared rebasing transformation.

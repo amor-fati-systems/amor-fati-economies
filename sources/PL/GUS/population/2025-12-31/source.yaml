@@ -1,0 +1,34 @@
+schema_version: 1
+source_id: PL-GUS-POPULATION-BALANCE-2025-12-31
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Population size, structure, vital statistics, and migration by territorial division, 2025
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/5468/6/40/1/ludnosc.stan_i_struktura_31.12.2025.zip
+  sha256: 9f98514eef93e7da6f95fc190746060bac7e59d2ae25fd17e3abca54b1736d2e
+observation_period: 2025-12-31
+released_at: 2026-04-29
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: person
+  published_concept: GUS population balance
+  geography: voivodeships, powiats, gminas, and higher territorial aggregates
+  dimensions:
+    - sex
+    - single year of age
+intended_use:
+  role: hard_control_candidate
+  supports:
+    - person totals by voivodeship, sex, and age after a declared age-band aggregation
+  does_not_support:
+    - private-versus-collective residence split
+    - household membership or household composition
+    - BAEL labour status
+forbidden_inferences:
+  - Do not relabel the published population-balance universe as another residence concept without a documented bridge.
+  - Do not manufacture household or labour attributes from this artifact alone.

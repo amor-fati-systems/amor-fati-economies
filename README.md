@@ -28,6 +28,9 @@ represents the observed Q4 2025 closing boundary and is the opening state for
 simulation from January 2026. No empirical component is committed or
 validated yet; its planned assembly status is recorded in
 [`baselines/PL/PL-2025-Q4-v1/baseline.yaml`](baselines/PL/PL-2025-Q4-v1/baseline.yaml).
+The [population source review](docs/baselines/PL-2025-Q4-v1/population-source-review.md)
+records which public inputs are already pinned, what each can support, and the
+remaining empirical boundaries before compiler work begins.
 
 Read [the baseline lifecycle](docs/baseline-lifecycle.md) and [data governance](docs/data-governance.md)
 before adding a country, source, or artifact.

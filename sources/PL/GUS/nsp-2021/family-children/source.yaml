@@ -1,0 +1,29 @@
+schema_version: 1
+source_id: PL-GUS-NSP2021-FAMILY-CHILDREN
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Families by number of children in statistical regions and census enumeration areas, NSP 2021
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/6536/13/1/1/rodziny_w_rejonach_i_obwodach_wg_liczby_dzieci_nsp2021.xlsx
+  sha256: 4ced0830b94c65312cf4c7a4d9dd09be2950fe5d51f6e8901feda7e8b4e197fe
+observation_period: 2021-03-31
+released_at: 2025-11-20
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: family
+  geography: statistical regions and census enumeration areas with gmina TERYT identifiers
+  dimensions:
+    - number of children
+intended_use:
+  role: structural_prior
+  supports:
+    - conditional allocation of children within a generated household structure
+  does_not_support:
+    - observed Q4 2025 child or household totals
+forbidden_inferences:
+  - Do not treat the published family distribution as a current person-level age distribution.

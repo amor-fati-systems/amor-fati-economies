@@ -1,0 +1,30 @@
+schema_version: 1
+source_id: PL-GUS-NSP2021-HOUSEHOLD-SIZE
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Households by number of persons in statistical regions and census enumeration areas, NSP 2021
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/6536/13/1/1/gospodarstwa_w_rejonach_i_obwodach_wg_liczby_osob_nsp2021.xlsx
+  sha256: a1a7db1b77055467946a13fa45b201e57888de71c538e4806add3644431297eb
+observation_period: 2021-03-31
+released_at: 2025-11-20
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: private household
+  geography: statistical regions and census enumeration areas with gmina TERYT identifiers
+  dimensions:
+    - household size
+intended_use:
+  role: structural_prior
+  supports:
+    - conditional household-size structure after aggregation to voivodeships
+  does_not_support:
+    - observed Q4 2025 household counts
+    - member roles or member ages
+forbidden_inferences:
+  - Do not publish these 2021 counts as a Q4 2025 control without a declared rebasing transformation.

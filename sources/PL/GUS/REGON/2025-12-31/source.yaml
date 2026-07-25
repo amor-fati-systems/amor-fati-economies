@@ -1,0 +1,38 @@
+schema_version: 1
+source_id: PL-GUS-REGON-2025-12-31
+country: PL
+provider:
+  id: GUS
+  name: Statistics Poland
+title: Quarterly information on national-economy entities in the REGON register, 2025 Q4
+artifact:
+  location: https://stat.gov.pl/download/gfx/portalinformacyjny/pl/defaultaktualnosci/5504/7/15/1/tablice_kwartalne_regon_20251231.xlsx
+  sha256: 26fb7f3301e5bd3304d2c565571e3db7acfa8d8ea65bc504c079bd5992adc05e
+observation_period: 2025-12-31
+released_at: 2026-01-16
+accessed_at: 2026-07-24
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: national-economy entity in the REGON register
+  published_concept: registered entity declaring economic activity
+  geography: Poland and voivodeships where published
+  dimensions:
+    - PKD 2007 activity classification
+    - legal form
+    - ownership sector
+    - declared expected-worker band
+intended_use:
+  role: structural_prior
+  supports:
+    - the stock and composition of registered entities at the Q4 2025 boundary
+    - a synthetic enterprise distribution by available geography, PKD 2007, and expected-worker band
+  does_not_support:
+    - realised employment, FTE, vacancies, or job capacity
+    - a worker-to-enterprise or worker-to-establishment relation
+    - a legal-enterprise identifier for a public synthetic baseline
+forbidden_inferences:
+  - Do not convert a declared expected-worker band into an observed number of employees or job slots.
+  - Do not reconcile this register directly to BAEL without a declared bridge between their statistical universes.
+  - Do not treat the registered seat or published activity as an observed workplace for every worker.
