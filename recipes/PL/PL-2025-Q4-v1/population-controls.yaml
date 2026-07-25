@@ -1,0 +1,159 @@
+schema_version: 1
+recipe_id: PL-2025-Q4-v1-population-controls
+baseline_id: PL-2025-Q4-v1
+component: population_controls
+status: source_pinned
+reference_state_boundary: 2025-12-31
+population_scope: private_household_residents
+excluded_runtime_population:
+  - collective_residents
+
+# The recipe records a retrospective reference economy. Every source keeps its
+# own observation vintage; the baseline ID does not relabel a prior as a Q4
+# 2025 measurement.
+sources:
+  population_balance:
+    record: sources/PL/GUS/population/2025-12-31/source.yaml
+    workbook: tabela03.xls
+    use: resident persons by voivodeship, sex, and single year of age; the
+      runtime population is restricted to the private-household perimeter
+  collective_accommodation:
+    record: sources/PL/GUS/nsp-2021/collective-accommodation/source.yaml
+    use: out-of-scope aggregate control for documenting collective residents;
+      it is not used to generate runtime persons, labour rows, or employment
+  bael:
+    record: sources/PL/GUS/bael/2025-Q4/source.yaml
+    workbook: 1.Aktywnizawodowo-t.1.1-1.17_4kw.2025.xls
+    worksheet: tab.1.3
+    use: national sex-by-age labour-status margins in thousands of persons
+  household_size:
+    record: sources/PL/GUS/nsp-2021/household-size/source.yaml
+    worksheet: Dane - rejony statystyczne
+    use: regional structural prior for private-household size
+  household_composition:
+    record: sources/PL/GUS/nsp-2021/household-composition/source.yaml
+    worksheet: Dane - rejony statystyczne
+    use: regional structural prior for household family composition
+  family_type:
+    record: sources/PL/GUS/nsp-2021/family-type/source.yaml
+    worksheet: Dane - rejony statystyczne
+    use: structural prior for couple and lone-parent allocation within one-family households
+  family_children:
+    record: sources/PL/GUS/nsp-2021/family-children/source.yaml
+    worksheet: Dane - rejony statystyczne
+    use: structural prior for dependent-child allocation within synthetic family households
+  employment:
+    record: sources/PL/GUS/employment/2025-12-31/source.yaml
+    workbook: pracujacy_w_gospodarce_narodowej_w_polsce_w_grudniu_2025_tab.xlsx
+    residence_worksheet: Tabl. 26
+    entity_seat_worksheet: Tabl. 27
+    use: PKD 2007 section margins by residence voivodeship and entity-seat proxy voivodeship
+
+classifications:
+  territory:
+    id: TERYT-voivodeship
+    version: 2025-12-31
+    codes: 16 voivodeships
+  age_bands:
+    id: PL-population-BAEL-bridge
+    version: v1
+    codes:
+      - 0-14
+      - 15-17
+      - 18-19
+      - 20-24
+      - 25-29
+      - 30-34
+      - 35-39
+      - 40-44
+      - 45-49
+      - 50-54
+      - 55-59
+      - 60-64
+      - 65-74
+      - 75-89
+      - 90+
+  production:
+    id: PKD-2007-section
+    version: 2007
+    codes: A-U
+
+transforms:
+  persons:
+    source: population_balance
+    rule: >-
+      Aggregate single-year resident counts into the declared non-overlapping
+      age bands, then remove the separately controlled collective-resident
+      aggregate by voivodeship. Preserve the resulting private-household
+      voivodeship and sex-age totals exactly; no collective micro-persons are
+      generated.
+    control_strength: hard
+    transform_tolerance: 0
+  household_structure:
+    sources:
+      - household_size
+      - household_composition
+      - family_type
+      - family_children
+      - population_balance
+    rule: >-
+      Aggregate Census rows from statistical regions to voivodeships. Construct
+      a private-household size-by-composition seed from the Census marginals,
+      then rebase it to the 2025 private-person residual by deterministic
+      integer iterative proportional fitting. Derive member-role and age-band
+      positions from the same rebased structure. Household and membership cells
+      are modelled structural controls, not Q4 2025 observations.
+    control_strength: calibrated_margin
+    transform_tolerance: 0
+  labour_status:
+    sources:
+      - population_balance
+      - collective_accommodation
+      - bael
+    rule: >-
+      Convert BAEL thousands to persons exactly. Preserve published national
+      sex-by-age labour-status margins. Allocate those margins into the
+      private-household population cells with deterministic integer iterative
+      proportional fitting; residents below 15 receive not_applicable and
+      residents aged 90 or older receive non_bael_residual. Collective
+      residents are excluded from this runtime labour universe rather than
+      being imputed as employed, unemployed, or inactive.
+    control_strength: hard_for_published_bael_margins
+    source_rounding_tolerance: 500
+  synthetic_employment_attachment:
+    sources:
+      - bael
+      - employment
+    rule: >-
+      Treat GUS December 2025 residence-by-PKD and entity-seat-by-PKD counts as
+      two administrative allocation margins, not an origin-destination
+      observation. Reconcile their PKD section totals, scale the resulting
+      residence and entity-seat-proxy shares to the BAEL employed-person total,
+      and create a deterministic maximum-entropy residence-to-proxy matrix
+      within each PKD section. The resulting workplace location is a modeled
+      entity-seat proxy and never an observed actual workplace or commuting
+      pattern.
+    control_strength: calibrated_margin
+    source_universe_bridge: BAEL-employed-persons-to-national-economy-main-job-persons
+
+reconciliation:
+  - Persons retain exact private-household residual totals by voivodeship, sex, and age band after the declared collective-resident subtraction.
+  - Private-household persons equal the declared runtime population scope exactly.
+  - Collective residents remain an out-of-scope aggregate and are never silently added to runtime persons.
+  - Household member capacity and membership positions equal the private-resident total exactly.
+  - BAEL published national margins retain their stated sampling and published-rounding uncertainty; deterministic allocation has zero additional tolerance.
+  - Employed residents and synthetic primary employment assignments reconcile in represented persons after the declared BAEL-to-administrative-universe bridge.
+
+known_limits:
+  - The 2021 collective-accommodation aggregate is retained for scope accounting, not as a 2025 micro-population bridge.
+  - No public source here observes a regional BAEL status margin or a current commuting matrix.
+  - No public source here observes a person-to-enterprise or person-to-actual-worksite relation.
+  - Family counts and household counts are distinct source universes; the recipe may not equate them outside the declared structural synthesis.
+
+core_contract_gate:
+  status: blocked_pending_private_scope_bundle
+  reason: >-
+    The first loadable component must explicitly exclude collective residents
+    from the runtime population and labour-control universe. A bundle cannot
+    be emitted until persons, household, labour, and employment controls all
+    declare and validate the private-household population scope.

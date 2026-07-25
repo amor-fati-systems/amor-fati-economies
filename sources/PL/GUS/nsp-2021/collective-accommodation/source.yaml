@@ -1,0 +1,34 @@
+schema_version: 1
+source_id: PL-GUS-BDL-NSP2021-COLLECTIVE-ACCOMMODATION-VOIVODESHIPS
+country: PL
+provider:
+  id: GUS-BDL
+  name: Statistics Poland Local Data Bank
+title: Population staying in collective accommodation facilities by voivodeship, NSP 2021
+artifact:
+  location: https://bdl.stat.gov.pl/api/v1/data/by-variable/1722463?unit-level=2&year=2021&page-size=100&format=json
+  sha256: 9073ea137aded35c3662f1a2852daf0d701d3df18aefa3beb583586232dec6ef
+observation_period: 2021-03-31
+released_at: 2023-12-14
+accessed_at: 2026-07-25
+raw_artifact:
+  tracked_in_repository: false
+  redistribution_status: not_assessed
+statistical_universe:
+  unit: person
+  published_concept: Population staying in collective accommodation facilities in the 2021 Census.
+  geography: The 16 voivodeships returned by BDL territorial level 2.
+  dimensions:
+    - total population only
+intended_use:
+  role: structural_prior
+  supports:
+    - a voivodeship-specific 2021 collective-accommodation share used by the declared bridge to the 2025-12-31 population-balance total
+    - keeping collective residents explicit rather than assigning all 2025 residents to private households
+  does_not_support:
+    - an observed Q4 2025 collective-accommodation count
+    - sex, age, household membership, or BAEL labour-status allocation for collective residents
+    - a claim that its Census universe is identical to the 2025 population-balance universe
+forbidden_inferences:
+  - Do not publish the 2021 collective-accommodation count as a Q4 2025 observation.
+  - Do not infer a collective resident's household membership or labour status from this aggregate alone.
