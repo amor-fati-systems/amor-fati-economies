@@ -8,6 +8,10 @@ title: Population staying in collective accommodation facilities by voivodeship,
 artifact:
   location: https://bdl.stat.gov.pl/api/v1/data/by-variable/1722463?unit-level=2&year=2021&page-size=100&format=json
   sha256: 9073ea137aded35c3662f1a2852daf0d701d3df18aefa3beb583586232dec6ef
+bridge_denominator:
+  location: https://bdl.stat.gov.pl/api/v1/data/by-variable/1?unit-level=2&year=2021&page-size=100&format=json
+  sha256: ddf7862e539fe7fe86f0042b7c8433727399a853ea48d13cac024771d8468bdf
+  concept: total population by voivodeship, NSP 2021 BDL denominator for the declared 2021-to-2025 scale
 observation_period: 2021-03-31
 released_at: 2023-12-14
 accessed_at: 2026-07-25
