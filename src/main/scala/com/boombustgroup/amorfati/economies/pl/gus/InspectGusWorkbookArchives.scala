@@ -23,7 +23,7 @@ import scala.util.Using
   * source record digest before reading an archive.
   */
 object InspectGusWorkbookArchives:
-  private val MaxCellsPerRow = 16
+  private val MaxCellsPerRow         = 16
   private val MaxLegacyWorkbookBytes = 256L * 1024L * 1024L
 
   def main(args: Array[String]): Unit =
@@ -41,7 +41,9 @@ object InspectGusWorkbookArchives:
     if fileName.toLowerCase(Locale.ROOT).endsWith(".zip") then inspectArchive(path, options)
     else if fileName.toLowerCase(Locale.ROOT).endsWith(".xlsx") then inspectXlsx(path, options)
     else if isWorkbook(fileName) then
-      Using.resource(Files.newInputStream(path))(input => withCappedTemporaryWorkbook(fileName, input)(temporary => inspectWorkbook(path.toString, temporary, options)))
+      Using.resource(Files.newInputStream(path))(input =>
+        withCappedTemporaryWorkbook(fileName, input)(temporary => inspectWorkbook(path.toString, temporary, options)),
+      )
     else throw IllegalArgumentException(s"unsupported source file: $path")
 
   private def inspectArchive(archive: Path, options: Options): Unit =
@@ -95,8 +97,7 @@ object InspectGusWorkbookArchives:
         var read   = input.read(buffer)
         while read >= 0 do
           total += read
-          if total > MaxLegacyWorkbookBytes then
-            throw IllegalArgumentException(s"workbook exceeds $MaxLegacyWorkbookBytes bytes: $name")
+          if total > MaxLegacyWorkbookBytes then throw IllegalArgumentException(s"workbook exceeds $MaxLegacyWorkbookBytes bytes: $name")
           output.write(buffer, 0, read)
           read = input.read(buffer)
       f(temporary)
@@ -119,8 +120,8 @@ object InspectGusWorkbookArchives:
 
   private def printXlsxRows(input: InputStream, reader: XSSFReader, formatter: DataFormatter, maxRows: Int): Unit =
     val handler = new XSSFSheetXMLHandler.SheetContentsHandler:
-      private var values        = Vector.empty[String]
-      private var emittedRows   = 0
+      private var values      = Vector.empty[String]
+      private var emittedRows = 0
 
       override def startRow(rowNum: Int): Unit = values = Vector.empty
 

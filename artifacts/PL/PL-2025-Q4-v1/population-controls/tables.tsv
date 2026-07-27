@@ -1,0 +1,7 @@
+table	control_family	statistical_universe	strength	absolute_tolerance	source_provider	source_location	observation_period	release	accessed_at	transformation
+persons	persons	usual residents in private households	hard	0	GUS	pinned source records	2025-Q4	PL-2025-Q4-v1	2026-07-27	age-band aggregation and collective bridge
+households	households	private households	hard	0	GUS NSP	pinned source records	2021 structural prior	PL-2025-Q4-v1	2026-07-27	modeled household synthesis
+household_membership	household_membership	private-household member positions	hard	0	GUS NSP	pinned source records	2021 structural prior	PL-2025-Q4-v1	2026-07-27	modeled membership synthesis
+demographic_labour	labour	private usual residents aged 15+	calibrated_margin	10000000	GUS BAEL	pinned source records	2025-Q4	PL-2025-Q4-v1	2026-07-27	sex-age allocation from BAEL margins
+regional_labour	labour	private usual residents aged 15+	calibrated_margin	10000000	GUS BAEL	modeled regional bridge	2025-Q4	PL-2025-Q4-v1	2026-07-27	regional proportional allocation
+employment	employment	employed private usual residents	calibrated_margin	10000000	GUS	modeled employment bridge	2025-Q4	PL-2025-Q4-v1	2026-07-27	residence/workplace diagonal proxy
