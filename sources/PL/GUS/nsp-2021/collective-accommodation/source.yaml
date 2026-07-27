@@ -23,12 +23,13 @@ statistical_universe:
 intended_use:
   role: structural_prior
   supports:
-    - a voivodeship-specific 2021 collective-accommodation share used by the declared bridge to the 2025-12-31 population-balance total
-    - keeping collective residents explicit rather than assigning all 2025 residents to private households
+    - a voivodeship-specific 2021 collective-accommodation count used in the declared 2021-to-2025 scaling bridge
+    - deterministic derivation of modelled collective and private residual cells before the v1 private-household runtime filter
   does_not_support:
-    - an observed Q4 2025 collective-accommodation count
+    - an observed Q4 2025 collective-accommodation count; every 2025 value is a modelled bridge result
     - sex, age, household membership, or BAEL labour-status allocation for collective residents
     - a claim that its Census universe is identical to the 2025 population-balance universe
 forbidden_inferences:
   - Do not publish the 2021 collective-accommodation count as a Q4 2025 observation.
+  - Do not treat the scaled 2025 count, rounded residual, or sex-age allocation as source-exact evidence.
   - Do not infer a collective resident's household membership or labour status from this aggregate alone.

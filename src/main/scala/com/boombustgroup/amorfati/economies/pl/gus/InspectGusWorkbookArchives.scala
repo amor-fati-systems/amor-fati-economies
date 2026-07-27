@@ -1,6 +1,6 @@
 package com.boombustgroup.amorfati.economies.pl.gus
 
-import java.io.{ByteArrayInputStream, InputStream}
+import java.io.InputStream
 import java.nio.file.{Files, Path}
 import java.util.Locale
 import java.util.zip.ZipFile
@@ -24,6 +24,7 @@ import scala.util.Using
   */
 object InspectGusWorkbookArchives:
   private val MaxCellsPerRow = 16
+  private val MaxLegacyWorkbookBytes = 256L * 1024L * 1024L
 
   def main(args: Array[String]): Unit =
     val options = Options.parse(args.toList)
@@ -39,7 +40,8 @@ object InspectGusWorkbookArchives:
     val fileName = path.getFileName.toString
     if fileName.toLowerCase(Locale.ROOT).endsWith(".zip") then inspectArchive(path, options)
     else if fileName.toLowerCase(Locale.ROOT).endsWith(".xlsx") then inspectXlsx(path, options)
-    else if isWorkbook(fileName) then inspectWorkbook(path.toString, Files.readAllBytes(path), options)
+    else if isWorkbook(fileName) then
+      Using.resource(Files.newInputStream(path))(input => withCappedTemporaryWorkbook(fileName, input)(temporary => inspectWorkbook(path.toString, temporary, options)))
     else throw IllegalArgumentException(s"unsupported source file: $path")
 
   private def inspectArchive(archive: Path, options: Options): Unit =
@@ -53,12 +55,12 @@ object InspectGusWorkbookArchives:
         .filter(entry => options.matchesEntry(entry.getName))
         .foreach: entry =>
           val input = zip.getInputStream(entry)
-          try inspectWorkbook(entry.getName, input.readAllBytes(), options)
+          try withCappedTemporaryWorkbook(entry.getName, input)(temporary => inspectWorkbook(entry.getName, temporary, options))
           finally input.close()
     finally zip.close()
 
-  private def inspectWorkbook(name: String, bytes: Array[Byte], options: Options): Unit =
-    val workbook = WorkbookFactory.create(new ByteArrayInputStream(bytes))
+  private def inspectWorkbook(name: String, path: Path, options: Options): Unit =
+    val workbook = WorkbookFactory.create(path.toFile)
     try
       println(s"workbook\t$name")
       (0 until workbook.getNumberOfSheets).foreach { sheetIndex =>
@@ -82,6 +84,23 @@ object InspectGusWorkbookArchives:
             }
       }
     finally workbook.close()
+
+  private def withCappedTemporaryWorkbook[A](name: String, input: InputStream)(f: Path => A): A =
+    val suffix    = if name.toLowerCase(Locale.ROOT).endsWith(".xls") then ".xls" else ".workbook"
+    val temporary = Files.createTempFile("amor-fati-inspect-", suffix)
+    try
+      Using.resource(Files.newOutputStream(temporary)): output =>
+        val buffer = new Array[Byte](64 * 1024)
+        var total  = 0L
+        var read   = input.read(buffer)
+        while read >= 0 do
+          total += read
+          if total > MaxLegacyWorkbookBytes then
+            throw IllegalArgumentException(s"workbook exceeds $MaxLegacyWorkbookBytes bytes: $name")
+          output.write(buffer, 0, read)
+          read = input.read(buffer)
+      f(temporary)
+    finally Files.deleteIfExists(temporary)
 
   private def inspectXlsx(path: Path, options: Options): Unit =
     Using.resource(OPCPackage.open(path.toFile)): packageFile =>

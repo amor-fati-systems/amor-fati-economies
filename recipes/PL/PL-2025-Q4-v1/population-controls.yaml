@@ -89,6 +89,23 @@ transforms:
       generated.
     control_strength: hard
     transform_tolerance: 0
+  collective_residence_bridge:
+    sources:
+      - population_balance
+      - collective_accommodation
+    rule: >-
+      For each voivodeship, scale the 2021 collective-accommodation count to
+      the 2025 population-balance total using
+      collective_2025 = population_2025 * collective_2021 / population_2021.
+      Round to nearest person with half-up ties, cap the result at the local
+      2025 total, and allocate any sex-age detail only through deterministic
+      proportional allocation from the population-balance sex-age cells in
+      ascending sex and age-band order, assigning residual persons by largest
+      remainder and stable code order. The resulting collective and private
+      residual cells are modelled bridge outputs, not source-exact 2025
+      observations, and are excluded from the v1 runtime population.
+    control_strength: calibrated_margin
+    transform_tolerance: 1
   household_structure:
     sources:
       - household_size
@@ -109,6 +126,7 @@ transforms:
     sources:
       - population_balance
       - collective_accommodation
+      - collective_residence_bridge
       - bael
     rule: >-
       Convert BAEL thousands to persons exactly. Preserve published national
