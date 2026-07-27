@@ -18,7 +18,7 @@ object NormalizePopulationBalance:
   def main(args: Array[String]): Unit =
     args match
       case Array(input, output) => normalize(Path.of(input), Path.of(output))
-      case _ =>
+      case _                    =>
         Console.err.println("Usage: NormalizePopulationBalance <tabela03.xls> <output.tsv>")
         sys.exit(2)
 
@@ -28,24 +28,29 @@ object NormalizePopulationBalance:
       (0 until workbook.getNumberOfSheets).iterator.flatMap { index =>
         val sheet  = workbook.getSheetAt(index)
         val region = sheet.getSheetName.trim
-        sheet.iterator().asScala.drop(9).flatMap { row =>
-          val cells = row.cellIterator().asScala.map(cell => formatter.formatCellValue(cell).trim).toVector
-          if cells.size >= 4 then
-            val label = cells.head
-            for
-              _     <- cells.lift(1).flatMap(parseCount)
-              male  <- cells.lift(2).flatMap(parseCount)
-              female <- cells.lift(3).flatMap(parseCount)
-              if isAgeLabel(label)
-            yield Vector(
-              s"$region\tmale\t${escape(label)}\t$male",
-              s"$region\tfemale\t${escape(label)}\t$female",
-            )
-          else Vector.empty
-        }.flatten
+        sheet
+          .iterator()
+          .asScala
+          .drop(9)
+          .flatMap { row =>
+            val cells = row.cellIterator().asScala.map(cell => formatter.formatCellValue(cell).trim).toVector
+            if cells.size >= 4 then
+              val label = cells.head
+              for
+                _      <- cells.lift(1).flatMap(parseCount)
+                male   <- cells.lift(2).flatMap(parseCount)
+                female <- cells.lift(3).flatMap(parseCount)
+                if isAgeLabel(label)
+              yield Vector(
+                s"$region\tmale\t${escape(label)}\t$male",
+                s"$region\tfemale\t${escape(label)}\t$female",
+              )
+            else Vector.empty
+          }
+          .flatten
       }.toVector
     }
-    Files.createDirectories(output.getParent)
+    Option(output.getParent).foreach(parent => Files.createDirectories(parent))
     Files.writeString(output, (Header +: rows).mkString("\n") + "\n", UTF_8)
 
   private def parseCount(value: String): Option[Long] =

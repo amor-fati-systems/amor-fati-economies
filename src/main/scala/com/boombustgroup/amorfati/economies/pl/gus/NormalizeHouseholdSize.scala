@@ -14,8 +14,25 @@ import scala.util.Using
 
 /** Event-streams the NSP household-size worksheet into voivodeship totals. */
 object NormalizeHouseholdSize:
-  private val Header = "region\thousehold_size\thousehold_count"
-  private val Regions = Map("02" -> "Dolnośląskie", "04" -> "Kujawsko-pomorskie", "06" -> "Lubelskie", "08" -> "Lubuskie", "10" -> "Łódzkie", "12" -> "Małopolskie", "14" -> "Mazowieckie", "16" -> "Opolskie", "18" -> "Podkarpackie", "20" -> "Podlaskie", "22" -> "Pomorskie", "24" -> "Śląskie", "26" -> "Świętokrzyskie", "28" -> "Warmińsko-mazurskie", "30" -> "Wielkopolskie", "32" -> "Zachodniopomorskie")
+  private val Header  = "region\thousehold_size\thousehold_count"
+  private val Regions = Map(
+    "02" -> "Dolnośląskie",
+    "04" -> "Kujawsko-pomorskie",
+    "06" -> "Lubelskie",
+    "08" -> "Lubuskie",
+    "10" -> "Łódzkie",
+    "12" -> "Małopolskie",
+    "14" -> "Mazowieckie",
+    "16" -> "Opolskie",
+    "18" -> "Podkarpackie",
+    "20" -> "Podlaskie",
+    "22" -> "Pomorskie",
+    "24" -> "Śląskie",
+    "26" -> "Świętokrzyskie",
+    "28" -> "Warmińsko-mazurskie",
+    "30" -> "Wielkopolskie",
+    "32" -> "Zachodniopomorskie",
+  )
 
   def main(args: Array[String]): Unit =
     args match
@@ -28,25 +45,27 @@ object NormalizeHouseholdSize:
             val inputStream = sheets.next()
             try if sheets.getSheetName == "Dane - rejony statystyczne" then parse(inputStream, reader, totals)
             finally inputStream.close()
-        val lines = totals.toVector.sortBy { case ((region, size), _) => (region, size) }.map { case ((region, size), count) => s"$region\t$size\t$count" }
-        Files.createDirectories(Path.of(output).getParent)
+        val lines  = totals.toVector.sortBy { case ((region, size), _) => (region, size) }.map { case ((region, size), count) => s"$region\t$size\t$count" }
+        Option(Path.of(output).getParent).foreach(parent => Files.createDirectories(parent))
         Files.writeString(Path.of(output), (Header +: lines).mkString("\n") + "\n", UTF_8)
-      case _ =>
+      case _                    =>
         Console.err.println("Usage: NormalizeHouseholdSize <household-size.xlsx> <output.tsv>")
         sys.exit(2)
 
   private def parse(input: java.io.InputStream, reader: XSSFReader, totals: mutable.Map[(String, String), Long]): Unit =
     val handler = new XSSFSheetXMLHandler.SheetContentsHandler:
-      private var values = Vector.empty[String]
-      override def startRow(rowNum: Int): Unit = values = Vector.empty
-      override def cell(reference: String, value: String, comment: XSSFComment): Unit = values :+= value.trim
-      override def endRow(rowNum: Int): Unit =
+      private var values                                                                = Vector.empty[String]
+      override def startRow(rowNum: Int): Unit                                          = values = Vector.empty
+      override def cell(reference: String, value: String, comment: XSSFComment): Unit   = values :+= value.trim
+      override def endRow(rowNum: Int): Unit                                            =
         if rowNum > 0 && values.size >= 5 then
           for
             region <- Regions.get(values(0).take(2))
             count  <- values(4).replace(" ", "").toLongOption
           do totals.update((region, values(3)), totals((region, values(3))) + count)
       override def headerFooter(text: String, isHeader: Boolean, tagName: String): Unit = ()
-    val parser = XMLReaderFactory.createXMLReader()
-    parser.setContentHandler(new XSSFSheetXMLHandler(reader.getStylesTable, null, reader.getSharedStringsTable, handler, new org.apache.poi.ss.usermodel.DataFormatter(), false))
+    val parser  = XMLReaderFactory.createXMLReader()
+    parser.setContentHandler(
+      new XSSFSheetXMLHandler(reader.getStylesTable, null, reader.getSharedStringsTable, handler, new org.apache.poi.ss.usermodel.DataFormatter(), false),
+    )
     parser.parse(new InputSource(input))
