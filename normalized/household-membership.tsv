@@ -1,0 +1,5 @@
+composition	member_role	age_band	count
+other_multi_person	other_member	25-64	5577558
+one_person	adult	25-64	7872805
+couple_with_dependent_children	adult	25-64	15422472
+couple_with_dependent_children	dependent_child	0-14	6191901
